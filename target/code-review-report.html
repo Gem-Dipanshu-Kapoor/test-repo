@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Review Report - Test Automation Project</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f8fafc;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        h1 {
+            color: #2d3748;
+            text-align: center;
+            border-bottom: 3px solid #4299e1;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #2d3748;
+            border-left: 5px solid #4299e1;
+            padding-left: 20px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        .code-block {
+            background-color: #f7fafc;
+            border: 1px solid #e2e8f0;
+            color: #2d3748;
+            padding: 20px;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .added {
+            background-color: #f0fff4;
+            color: #22543d;
+            display: block;
+            margin: 1px 0;
+            padding: 4px 8px;
+            border-radius: 6px;
+            border-left: 3px solid #68d391;
+        }
+        .violation {
+            background-color: #fed7d7;
+            border-left: 4px solid #e53e3e;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .violation h4 {
+            color: #c53030;
+            margin: 0 0 12px 0;
+            font-size: 16px;
+        }
+        .suggestion {
+            background-color: #e6fffa;
+            border-left: 4px solid #38b2ac;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .suggestion h4 {
+            color: #2c7a7b;
+            margin: 0 0 12px 0;
+            font-size: 16px;
+        }
+        .file-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            margin: 25px 0 0 0;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .line-number {
+            color: #a0aec0;
+            margin-right: 20px;
+            user-select: none;
+            font-weight: 500;
+            min-width: 35px;
+            display: inline-block;
+        }
+        .violation-marker {
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .severity-critical {
+            background-color: #fc8181;
+            color: #742a2a;
+        }
+        .severity-major {
+            background-color: #f6ad55;
+            color: #7b341e;
+        }
+        .severity-minor {
+            background-color: #68d391;
+            color: #22543d;
+        }
+        .severity-info {
+            background-color: #63b3ed;
+            color: #2a4365;
+        }
+        .severity-legend {
+            background-color: #f7fafc;
+            border: 1px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .severity-legend h4 {
+            margin-top: 0;
+            color: #2d3748;
+        }
+        .severity-item {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+        .summary-section {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+        .summary-section h3 {
+            margin-top: 0;
+            color: white;
+        }
+        .recommendations-section {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+        .recommendations-section h3 {
+            margin-top: 0;
+            color: white;
+        }
+        .recommendations-section ol {
+            padding-left: 20px;
+        }
+        .recommendations-section li {
+            margin-bottom: 8px;
+        }
+        .violation-description {
+            font-size: 0.9em;
+            color: #4a5568;
+            margin-top: 4px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Code Review Report - Test Automation Project</h1>
+        <p><strong>Generated on:</strong> September 2, 2025</p>
+        <p><strong>Review Scope:</strong> src/test directory Java files</p>
+
+        <div class="severity-legend">
+            <h4>🎯 Violation Severity Legend</h4>
+            <span class="severity-item severity-critical">🔴 CRITICAL</span> - Code breaks, security issues, major functionality problems
+            <span class="severity-item severity-major">🟠 MAJOR</span> - Standards violations, maintainability issues, potential bugs
+            <span class="severity-item severity-minor">🟡 MINOR</span> - Style issues, minor improvements, best practices
+            <span class="severity-item severity-info">🔵 INFO</span> - Suggestions, optimizations, code enhancements
+        </div>
+
+        <h2>hooks/Hooks.java</h2>
+        <div class="file-header">File: hooks/Hooks.java</div>
+        <div class="code-block">
+<span class="added"><span class="line-number">1</span>package hooks;</span>
+<span class="added"><span class="line-number">2</span></span>
+<span class="added"><span class="line-number">3</span>import io.cucumber.java.After;</span>
+<span class="added"><span class="line-number">4</span>import io.cucumber.java.Before;</span>
+<span class="added"><span class="line-number">5</span>import io.cucumber.java.Scenario;</span>
+<span class="added"><span class="line-number">6</span>import implementation.Implementation;</span>
+<span class="added"><span class="line-number">7</span></span>
+<span class="added"><span class="line-number">8</span>public class Hooks {</span>
+<span class="added"><span class="line-number">9</span></span>
+<span class="added"><span class="line-number">10</span>    private Implementation implementation;</span>
+<span class="added"><span class="line-number">11</span></span>
+<span class="added"><span class="line-number">12</span>    public Hooks(Implementation implementation) {</span>
+<span class="added"><span class="line-number">13</span>        this.implementation = implementation;</span>
+<span class="added"><span class="line-number">14</span>    }</span>
+<span class="added"><span class="line-number">15</span></span>
+<span class="added"><span class="line-number">16</span>    @Before</span>
+<span class="added"><span class="line-number">17</span>    public void beforeScenario(Scenario scenario) {</span>
+<span class="added"><span class="line-number">18</span>        implementation.startTest(scenario.getName());</span>
+<span class="added"><span class="line-number">19</span>        System.out.println("Starting Cucumber Scenario: " + scenario.getName());</span>
+<span class="added"><span class="line-number">20</span>    }</span>
+<span class="added"><span class="line-number">21</span></span>
+<span class="added"><span class="line-number">22</span>    @After</span>
+<span class="added"><span class="line-number">23</span>    public void afterScenario(Scenario scenario) {</span>
+<span class="added"><span class="line-number">24</span>        implementation.endTest();</span>
+<span class="added"><span class="line-number">25</span>        System.out.println("Finished Cucumber Scenario: " + scenario.getName());</span>
+<span class="added"><span class="line-number">26</span>    }</span>
+<span class="added"><span class="line-number">27</span>}</span>
+        </div>
+
+        <div class="violation">
+            <h4>🚨 Coding Standard Violations Found:</h4>
+            <ul>
+                <li><strong>Line 8:</strong> Class missing JavaDoc documentation
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">All public classes must have comprehensive JavaDoc comments describing purpose, usage, and author information</div>
+                </li>
+                <li><strong>Line 12:</strong> Constructor missing JavaDoc documentation
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Public constructors should document their parameters and initialization behavior</div>
+                </li>
+                <li><strong>Line 17:</strong> Method missing JavaDoc documentation
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Public methods must document parameters, return values, exceptions, and behavior</div>
+                </li>
+                <li><strong>Line 19:</strong> Use of System.out.println instead of proper logging
+                    <span class="violation-marker severity-critical">🔴 CRITICAL</span>
+                    <div class="violation-description">System.out statements can impact performance and provide no log level control. Use SLF4J or Log4j instead</div>
+                </li>
+                <li><strong>Line 23:</strong> Method missing JavaDoc documentation
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Hook methods should document their lifecycle purpose and any side effects</div>
+                </li>
+                <li><strong>Line 25:</strong> Use of System.out.println instead of proper logging
+                    <span class="violation-marker severity-critical">🔴 CRITICAL</span>
+                    <div class="violation-description">Console output in production code violates logging standards and debugging practices</div>
+                </li>
+            </ul>
+        </div>
+
+        <h2>implementation/Implementation.java</h2>
+        <div class="file-header">File: implementation/Implementation.java</div>
+        <div class="code-block">
+<span class="added"><span class="line-number">1</span>package implementation;</span>
+<span class="added"><span class="line-number">2</span></span>
+<span class="added"><span class="line-number">3</span>import com.aventstack.extentreports.ExtentReports;</span>
+<span class="added"><span class="line-number">4</span>import com.aventstack.extentreports.ExtentTest;</span>
+<span class="added"><span class="line-number">5</span>import com.aventstack.extentreports.reporter.ExtentSparkReporter;</span>
+<span class="added"><span class="line-number">6</span>import io.github.bonigarcia.wdm.WebDriverManager;</span>
+<span class="added"><span class="line-number">7</span>import locators.Locators;</span>
+<span class="added"><span class="line-number">8</span>import org.apache.commons.io.FileUtils;</span>
+<span class="added"><span class="line-number">9</span>import org.junit.Assert;</span>
+<span class="added"><span class="line-number">10</span>import org.openqa.selenium.*;</span>
+<span class="added"><span class="line-number">11</span>import org.openqa.selenium.chrome.ChromeDriver;</span>
+<span class="added"><span class="line-number">12</span>import org.openqa.selenium.support.ui.ExpectedConditions;</span>
+<span class="added"><span class="line-number">13</span>import org.openqa.selenium.support.ui.WebDriverWait;</span>
+<span class="added"><span class="line-number">14</span></span>
+<span class="added"><span class="line-number">15</span>import java.io.File;</span>
+<span class="added"><span class="line-number">16</span>import java.io.IOException;</span>
+<span class="added"><span class="line-number">17</span>import java.text.SimpleDateFormat;</span>
+<span class="added"><span class="line-number">18</span>import java.time.Duration;</span>
+<span class="added"><span class="line-number">19</span>import java.util.Date;</span>
+<span class="added"><span class="line-number">20</span></span>
+<span class="added"><span class="line-number">21</span>public class Implementation {</span>
+        </div>
+
+        <div class="violation">
+            <h4>🚨 Coding Standard Violations Found:</h4>
+            <ul>
+                <li><strong>Line 21:</strong> Class missing JavaDoc documentation
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Core implementation class requires comprehensive documentation explaining its role in test automation framework</div>
+                </li>
+                <li><strong>Line 29-40:</strong> Complex static initialization block
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Static blocks should be avoided for complex initialization. Use factory methods or initialization methods instead</div>
+                </li>
+                <li><strong>Line 30:</strong> Hardcoded file path
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">File paths should be externalized to configuration files for environment flexibility and maintainability</div>
+                </li>
+                <li><strong>Line 35:</strong> Hardcoded configuration string
+                    <span class="violation-marker severity-minor">🟡 MINOR</span>
+                    <div class="violation-description">Report titles should be configurable through properties files or constants</div>
+                </li>
+                <li><strong>Line 36:</strong> Hardcoded configuration string
+                    <span class="violation-marker severity-minor">🟡 MINOR</span>
+                    <div class="violation-description">Document titles should be configurable through properties files or constants</div>
+                </li>
+                <li><strong>Line 46:</strong> Method missing JavaDoc documentation
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Public API methods must document their purpose and side effects</div>
+                </li>
+                <li><strong>Line 54:</strong> Method missing JavaDoc documentation
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Public API methods must document their purpose and expected behavior</div>
+                </li>
+                <li><strong>Line 61:</strong> Hardcoded URL
+                    <span class="violation-marker severity-critical">🔴 CRITICAL</span>
+                    <div class="violation-description">Application URLs must be externalized for different environments (dev, staging, prod). This prevents environment-specific issues</div>
+                </li>
+                <li><strong>Line 65:</strong> Generic Exception catching
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Catch specific exceptions (WebDriverException, TimeoutException) for better error handling and debugging</div>
+                </li>
+                <li><strong>Line 101:</strong> Method missing JavaDoc documentation
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Public API methods must document their purpose and parameters</div>
+                </li>
+                <li><strong>Line 103:</strong> Use of Thread.sleep instead of WebDriverWait
+                    <span class="violation-marker severity-critical">🔴 CRITICAL</span>
+                    <div class="violation-description">Thread.sleep causes flaky tests and poor performance. Use WebDriverWait with ExpectedConditions for reliable synchronization</div>
+                </li>
+                <li><strong>Line 225:</strong> Private method missing JavaDoc documentation
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Private methods with complex logic should be documented for maintainability</div>
+                </li>
+            </ul>
+        </div>
+
+        <h2>locators/Locators.java</h2>
+        <div class="file-header">File: locators/Locators.java</div>
+        <div class="code-block">
+<span class="added"><span class="line-number">1</span>package locators;</span>
+<span class="added"><span class="line-number">2</span></span>
+<span class="added"><span class="line-number">3</span>import org.openqa.selenium.By;</span>
+<span class="added"><span class="line-number">4</span></span>
+<span class="added"><span class="line-number">5</span>public class Locators {</span>
+        </div>
+
+        <div class="violation">
+            <h4>🚨 Coding Standard Violations Found:</h4>
+            <ul>
+                <li><strong>Line 5:</strong> Class missing JavaDoc documentation
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Locator repository classes should document their purpose and organization strategy</div>
+                </li>
+                <li><strong>Line 7:</strong> Wrong naming convention for constant
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Java constants must follow UPPER_CASE_WITH_UNDERSCORES naming convention as per Oracle coding standards</div>
+                </li>
+                <li><strong>Line 8:</strong> Wrong naming convention for constant
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Static final fields should use UPPER_CASE naming convention</div>
+                </li>
+                <li><strong>Line 9:</strong> Wrong naming convention for constant<br>
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <span class="violation-marker severity-critical">🔴 CRITICAL</span> Fragile XPath locator with CSS class names
+                    <div class="violation-description">CSS class-based XPaths are extremely brittle and will break with UI framework updates. Use data-testid or stable attributes</div>
+                </li>
+                <li><strong>Line 10:</strong> Wrong naming convention for constant<br>
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <span class="violation-marker severity-critical">🔴 CRITICAL</span> Test-specific failure locator shouldn't be in production code
+                    <div class="violation-description">Failure-specific locators indicate test design flaws. Remove test artifacts from production locator repository</div>
+                </li>
+                <li><strong>Line 12:</strong> Wrong naming convention for constant
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Should be CHECKBOX_1 following Java constant naming standards</div>
+                </li>
+                <li><strong>Line 14:</strong> Wrong naming convention for constant
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Should be CHECKBOX_2 following Java constant naming standards</div>
+                </li>
+                <li><strong>Line 16:</strong> Wrong naming convention for constant
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Should be COMPARE_BUTTON following Java constant naming standards</div>
+                </li>
+                <li><strong>Line 18-24:</strong> All remaining constants violate naming convention
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">All static final fields should use UPPER_CASE_WITH_UNDERSCORES naming convention</div>
+                </li>
+            </ul>
+        </div>
+
+        <h2>stepdefinitions/StepDefinition.java</h2>
+        <div class="file-header">File: stepdefinitions/StepDefinition.java</div>
+        <div class="code-block">
+<span class="added"><span class="line-number">1</span>package stepdefinitions;</span>
+<span class="added"><span class="line-number">2</span></span>
+<span class="added"><span class="line-number">3</span>import implementation.Implementation;</span>
+<span class="added"><span class="line-number">4</span>import io.cucumber.java.en.Given;</span>
+<span class="added"><span class="line-number">5</span>import io.cucumber.java.en.When;</span>
+<span class="added"><span class="line-number">6</span>import io.cucumber.java.en.Then;</span>
+<span class="added"><span class="line-number">7</span>import io.cucumber.java.en.And;</span>
+<span class="added"><span class="line-number">8</span></span>
+<span class="added"><span class="line-number">9</span>public class StepDefinition {</span>
+        </div>
+
+        <div class="violation">
+            <h4>🚨 Coding Standard Violations Found:</h4>
+            <ul>
+                <li><strong>Line 9:</strong> Class missing JavaDoc documentation
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Step definition classes should document their role in the BDD test framework and testing strategy</div>
+                </li>
+                <li><strong>Line 10:</strong> Direct object instantiation instead of dependency injection
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Use dependency injection (PicoContainer) for better testability, maintainability, and shared state management</div>
+                </li>
+                <li><strong>Line 13:</strong> Method missing JavaDoc documentation
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Step definition methods should document their BDD purpose and any preconditions or side effects</div>
+                </li>
+                <li><strong>Line 15:</strong> Debug System.out.println statement
+                    <span class="violation-marker severity-critical">🔴 CRITICAL</span>
+                    <div class="violation-description">Debug print statements must be removed from production code. Use proper logging framework instead</div>
+                </li>
+                <li><strong>Line 20:</strong> Method missing JavaDoc documentation
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">All step definition methods require documentation explaining their behavior and parameters</div>
+                </li>
+                <li><strong>Line 25:</strong> Method missing JavaDoc documentation
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Wait step methods should document timing rationale and synchronization strategy</div>
+                </li>
+                <li><strong>Line 30:</strong> Method missing JavaDoc documentation
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">UI interaction methods should document expected behavior and error handling</div>
+                </li>
+                <li><strong>Line 35:</strong> Test-specific failure step definition
+                    <span class="violation-marker severity-critical">🔴 CRITICAL</span>
+                    <div class="violation-description">Failure-specific steps indicate poor test design. Remove test artifacts and use proper error handling patterns</div>
+                </li>
+                <li><strong>All methods:</strong> Missing JavaDoc documentation
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Every step definition method must be documented for BDD clarity and team understanding</div>
+                </li>
+            </ul>
+        </div>
+
+        <h2>testrunners/TestRunner.java</h2>
+        <div class="file-header">File: testrunners/TestRunner.java</div>
+        <div class="code-block">
+<span class="added"><span class="line-number">1</span>package testrunners;</span>
+<span class="added"><span class="line-number">2</span></span>
+<span class="added"><span class="line-number">3</span>import io.cucumber.junit.Cucumber;</span>
+<span class="added"><span class="line-number">4</span>import org.junit.runner.RunWith;</span>
+<span class="added"><span class="line-number">5</span>import io.cucumber.junit.CucumberOptions;</span>
+<span class="added"><span class="line-number">6</span></span>
+<span class="added"><span class="line-number">7</span>@RunWith(Cucumber.class)</span>
+<span class="added"><span class="line-number">8</span>@CucumberOptions(</span>
+<span class="added"><span class="line-number">9</span>        features = "src/test/resources/features",</span>
+<span class="added"><span class="line-number">10</span>        glue = {"stepdefinitions", "implementation", "hooks"},</span>
+<span class="added"><span class="line-number">11</span>        plugin = {"pretty", "html:target/cucumber-reports.html","utils.FailedTestLogger"},</span>
+<span class="added"><span class="line-number">12</span>        monochrome = true</span>
+<span class="added"><span class="line-number">13</span>)</span>
+<span class="added"><span class="line-number">14</span>public class TestRunner {</span>
+<span class="added"><span class="line-number">15</span>}</span>
+        </div>
+
+        <div class="violation">
+            <h4>🚨 Coding Standard Violations Found:</h4>
+            <ul>
+                <li><strong>Line 10:</strong> "implementation" package shouldn't be in glue configuration
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Glue should only contain step definitions and hooks packages. Implementation classes are not Cucumber components</div>
+                </li>
+                <li><strong>Line 14:</strong> Class missing JavaDoc documentation
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Test runner classes should document test execution strategy, configuration purpose, and usage instructions</div>
+                </li>
+                <li><strong>Missing tags configuration:</strong> No test categorization strategy
+                    <span class="violation-marker severity-info">🔵 INFO</span>
+                    <div class="violation-description">Consider adding tags for test categorization (smoke, regression, etc.) for better test organization</div>
+                </li>
+                <li><strong>Missing strict option:</strong> Undefined steps not failing tests
+                    <span class="violation-marker severity-minor">🟡 MINOR</span>
+                    <div class="violation-description">Add strict=true to CucumberOptions to fail tests with undefined steps for better test reliability</div>
+                </li>
+            </ul>
+        </div>
+
+        <h2>utils/FailedTestLogger.java</h2>
+        <div class="file-header">File: utils/FailedTestLogger.java</div>
+        <div class="code-block">
+<span class="added"><span class="line-number">1</span>package utils;</span>
+<span class="added"><span class="line-number">2</span></span>
+<span class="added"><span class="line-number">3</span>import io.cucumber.plugin.ConcurrentEventListener;</span>
+<span class="added"><span class="line-number">4</span>import io.cucumber.plugin.Plugin;</span>
+<span class="added"><span class="line-number">5</span>import io.cucumber.plugin.event.EventPublisher;</span>
+<span class="added"><span class="line-number">6</span>import io.cucumber.plugin.event.Status;</span>
+<span class="added"><span class="line-number">7</span>import io.cucumber.plugin.event.TestCaseFinished;</span>
+<span class="added"><span class="line-number">8</span></span>
+<span class="added"><span class="line-number">9</span>import java.io.FileWriter;</span>
+<span class="added"><span class="line-number">10</span>import java.io.IOException;</span>
+<span class="added"><span class="line-number">11</span>import java.io.PrintWriter;</span>
+<span class="added"><span class="line-number">12</span></span>
+<span class="added"><span class="line-number">13</span>public class FailedTestLogger implements ConcurrentEventListener, Plugin {</span>
+<span class="added"><span class="line-number">14</span></span>
+<span class="added"><span class="line-number">15</span>    @Override</span>
+<span class="added"><span class="line-number">16</span>    public void setEventPublisher(EventPublisher publisher) {</span>
+<span class="added"><span class="line-number">17</span>        publisher.registerHandlerFor(TestCaseFinished.class, this::logFailure);</span>
+<span class="added"><span class="line-number">18</span>    }</span>
+<span class="added"><span class="line-number">19</span></span>
+<span class="added"><span class="line-number">20</span>    private void logFailure(TestCaseFinished event) {</span>
+<span class="added"><span class="line-number">21</span>        if (event.getResult().getStatus() != Status.PASSED) {</span>
+<span class="added"><span class="line-number">22</span>            try (FileWriter fw = new FileWriter("target/failed-tests.log", true);</span>
+<span class="added"><span class="line-number">23</span>                 PrintWriter pw = new PrintWriter(fw)) {</span>
+<span class="added"><span class="line-number">24</span>                pw.println("---------");</span>
+<span class="added"><span class="line-number">25</span>                pw.println("Scenario: " + event.getTestCase().getName());</span>
+<span class="added"><span class="line-number">26</span>                pw.println("Status: " + event.getResult().getStatus());</span>
+<span class="added"><span class="line-number">27</span>                Throwable error = event.getResult().getError();</span>
+<span class="added"><span class="line-number">28</span>                if (error != null) {</span>
+<span class="added"><span class="line-number">29</span>                    pw.println("Error Message: " + error.getMessage());</span>
+<span class="added"><span class="line-number">30</span>                    pw.println("Exception: " + error.getClass().getName());</span>
+<span class="added"><span class="line-number">31</span>                    pw.println("Stack Trace: ");</span>
+<span class="added"><span class="line-number">32</span>                    error.printStackTrace(pw);</span>
+<span class="added"><span class="line-number">33</span>                }</span>
+<span class="added"><span class="line-number">34</span>                pw.println("---------");</span>
+<span class="added"><span class="line-number">35</span>            } catch (IOException e) {</span>
+<span class="added"><span class="line-number">36</span>                throw new RuntimeException(e);</span>
+<span class="added"><span class="line-number">37</span>            }</span>
+<span class="added"><span class="line-number">38</span>        }</span>
+<span class="added"><span class="line-number">39</span>    }</span>
+<span class="added"><span class="line-number">40}</span>
+        </div>
+
+        <div class="violation">
+            <h4>🚨 Coding Standard Violations Found:</h4>
+            <ul>
+                <li><strong>Line 13:</strong> Class missing JavaDoc documentation
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Utility classes should document their purpose, usage patterns, and integration with testing framework</div>
+                </li>
+                <li><strong>Line 16:</strong> Method missing JavaDoc documentation
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Override methods should document their behavior and relationship to parent interface</div>
+                </li>
+                <li><strong>Line 20:</strong> Method missing JavaDoc documentation
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Private methods with complex logic should be documented for maintainability</div>
+                </li>
+                <li><strong>Line 22:</strong> Hardcoded file path
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">File paths should be configurable through properties or constants for flexibility across environments</div>
+                </li>
+                <li><strong>Line 36:</strong> Poor error handling - throwing RuntimeException
+                    <span class="violation-marker severity-major">🟠 MAJOR</span>
+                    <div class="violation-description">Use specific exception types and proper logging instead of generic RuntimeException for better error tracking</div>
+                </li>
+                <li><strong>Missing timestamp:</strong> Log entries lack temporal information
+                    <span class="violation-marker severity-minor">🟡 MINOR</span>
+                    <div class="violation-description">Add timestamps to log entries for better debugging and failure analysis</div>
+                </li>
+                <li><strong>No log rotation:</strong> Log file will grow indefinitely
+                    <span class="violation-marker severity-info">🔵 INFO</span>
+                    <div class="violation-description">Consider implementing log rotation or size limits to prevent disk space issues</div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="summary-section">
+            <h3>📊 Violation Summary by Severity</h3>
+            <p><span class="severity-item severity-critical">🔴 CRITICAL: 8 violations</span> - Immediate attention required</p>
+            <p><span class="severity-item severity-major">🟠 MAJOR: 25 violations</span> - High priority fixes needed</p>
+            <p><span class="severity-item severity-minor">🟡 MINOR: 4 violations</span> - Style and best practice improvements</p>
+            <p><span class="severity-item severity-info">🔵 INFO: 4 violations</span> - Enhancement suggestions</p>
+            <br>
+            <p><strong>Total Violations: 41</strong> across 6 Java files</p>
+            <br>
+            <h4>🔥 Most Critical Files (by severity):</h4>
+            <ol>
+                <li><strong>implementation/Implementation.java</strong> - 3 Critical, 6 Major violations</li>
+                <li><strong>locators/Locators.java</strong> - 2 Critical, 2 Major violations</li>
+                <li><strong>hooks/Hooks.java</strong> - 2 Critical, 4 Major violations</li>
+                <li><strong>stepdefinitions/StepDefinition.java</strong> - 2 Critical, 7 Major violations</li>
+                <li><strong>utils/FailedTestLogger.java</strong> - 0 Critical, 5 Major violations</li>
+                <li><strong>testrunners/TestRunner.java</strong> - 0 Critical, 2 Major violations</li>
+            </ol>
+        </div>
+
+        <div class="recommendations-section">
+            <h3>🎯 Priority Action Plan</h3>
+            <ol>
+                <li><strong>🔴 CRITICAL (Immediate - This Week):</strong>
+                    <ul>
+                        <li>Replace Thread.sleep with WebDriverWait in Implementation.java</li>
+                        <li>Externalize hardcoded URL to configuration file</li>
+                        <li>Fix fragile XPath locators in Locators.java</li>
+                        <li>Remove all System.out.println statements</li>
+                        <li>Remove test-specific failure code from production</li>
+                    </ul>
+                </li>
+                <li><strong>🟠 MAJOR (This Sprint - 2 weeks):</strong>
+                    <ul>
+                        <li>Add comprehensive JavaDoc to all classes and methods</li>
+                        <li>Fix naming conventions in Locators.java (UPPER_CASE constants)</li>
+                        <li>Implement dependency injection in StepDefinition</li>
+                        <li>Improve exception handling with specific exception types</li>
+                        <li>Extract hardcoded paths to configuration</li>
+                    </ul>
+                </li>
+                <li><strong>🟡 MINOR (Next Sprint - 1 month):</strong>
+                    <ul>
+                        <li>Extract configuration strings to properties files</li>
+                        <li>Add strict mode to TestRunner configuration</li>
+                        <li>Add timestamps to logging utilities</li>
+                        <li>Improve code organization and structure</li>
+                    </ul>
+                </li>
+                <li><strong>🔵 INFO (Backlog - Future):</strong>
+                    <ul>
+                        <li>Consider CSS selectors over XPath for better performance</li>
+                        <li>Implement log rotation for FailedTestLogger</li>
+                        <li>Add test categorization with tags</li>
+                        <li>Performance optimizations and monitoring</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>
