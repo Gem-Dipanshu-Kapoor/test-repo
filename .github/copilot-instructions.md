@@ -23,3 +23,29 @@ if there are unversioned files
 - If there are no changes or unversioned files, simply state "No changes detected"
 - Do not add execution status in the report
 - Do not read config files only read src/test project files
+
+## Task: Generate JavaDocs
+- Traverse the `src/` directory.
+- For every `.java` file, ensure all classes, methods, and public fields are documented using standard JavaDoc conventions.
+- If a class or method lacks JavaDocs, infer the purpose based on method names, parameters, return types, and context from nearby code.
+- Use the format:
+```java
+/**
+* Brief summary.
+*
+* @param paramName description
+* @return description
+  */
+```
+
+## Task: Summarize the Project
+- Analyze the entire codebase to understand its purpose and functionality.
+- Create a concise summary (3-5 sentences) of what the project does, its main features, and its intended use case.
+- Place this summary in a `SUMMARY.md` file at the root of the project.
+- Create a simple architecture diagram (using ASCII art or a simple text-based format) that outlines the main components and their interactions. Save this as `ARCHITECTURE.md`.
+
+## Task: Identify duplicate code and refactor steps or scenarios into reusable methods or classes
+- Look for repeated code blocks, especially in test steps or scenario definitions.
+- Extract these into reusable methods or utility classes to promote DRY (Don't Repeat Yourself) principles
+- Ensure that the refactored code maintains the same functionality and is well-documented.
+- Remove the duplicate code after refactoring to keep the codebase clean and maintainable.
