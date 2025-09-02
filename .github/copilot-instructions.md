@@ -51,4 +51,4 @@ if there are unversioned files
 - Remove the duplicate code after refactoring to keep the codebase clean and maintainable.
 
 ## Task: Run API Tests
--do the tasks defined in the API testing task file
+- Do the tasks defined in the API testing task file
