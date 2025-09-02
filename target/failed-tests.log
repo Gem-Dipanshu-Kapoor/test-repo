@@ -1,0 +1,13 @@
+org.openqa.selenium.TimeoutException: Expected condition failed: waiting for visibility of element located by By.id: username (tried for 20 second(s) with 500 milliseconds interval)
+    Build info: version: '4.12.1', revision: 'b6d8c0b8b6'
+    System info: host: 'DESKTOP-12345', os.name: 'Windows 11', os.arch: 'amd64', os.version: '10.0', java.version: '17.0.9'
+    Driver info: org.openqa.selenium.chrome.ChromeDriver
+    Command: [abcd1234efgh5678, findElement {using=id, value=username}]
+    Capabilities {browserName: chrome, browserVersion: 127.0.6533.73, ...}
+Session ID: abcd1234efgh5678
+
+    at org.openqa.selenium.support.ui.WebDriverWait.timeoutException(WebDriverWait.java:138)
+    at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:231)
+    at Implementation.clickChakraArrowLinkFail(Locators.java:123)
+    at stepdefinitions.LoginStepDefinitions.userClicksOnChakraArrowLinkFail(Stepdefinition.java:36)
+    at ✽.user enters username "testuser"(file:///.../features/FeatureFile.feature:23)
